@@ -31,8 +31,8 @@
     // i pulsanti flottanti compaiono dopo l'animazione e si nascondono nella sezione Contatti
     if (fab) fab.classList.toggle('is-visible', y > heroEnd + window.innerHeight * 0.5 && !contactsInView);
   }
-  // ...e anche sopra al footer, per non coprire i link
-  var hideFabOn = $$('.contact-stack, .footer');
+  // ...e anche sopra al footer e al riquadro "30 anni di esperienza", per non coprirli
+  var hideFabOn = $$('.contact-stack, .footer, .portrait figcaption');
   if (fab && hideFabOn.length && 'IntersectionObserver' in window) {
     var hiding = [];
     var fabObs = new IntersectionObserver(function (entries) {
