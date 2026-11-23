@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 """
-Genera la sequenza di fotogrammi per l'animazione della HOME a partire dal video.
+Genera l'animazione della HOME a partire dal video: un MP4 fluido a 60 fps
+(assets/hero/hero.mp4) e la sequenza di fotogrammi WebP usata come riserva
+quando il browser blocca la riproduzione automatica dei video.
 
 Il video originale ha un taglio netto tra l'ingresso dalla porta (fotogramma 72)
 e il salone (fotogramma 73). Qui lo sostituiamo con una transizione "zoom-through":
@@ -34,6 +36,9 @@ A_CENTER = (0.46, 0.50)  # punto di fuga oltre la porta (sala da pranzo)
 B_CENTER = (0.50, 0.52)
 QUALITY = 74
 WIDTH = 720
+SPEED = 0.8              # velocità del video della Home (0.8 = un po' più lento, più cinematografico)
+VIDEO_FPS = 60           # fotogrammi al secondo dopo l'interpolazione di movimento
+VIDEO_OUT = os.path.join(ROOT, "assets", "hero", "hero.mp4")
 
 
 def smoothstep(x):
@@ -121,6 +126,22 @@ def main(video):
 
         for i in range(b_resume, len(src)):
             frames.append(load(i))
+
+        # video della Home: interpolazione di movimento a 60 fps, leggermente rallentato
+        seq = os.path.join(tmp, "seq")
+        os.makedirs(seq)
+        for n, im in enumerate(frames):
+            im.save(os.path.join(seq, f"o{n:04d}.png"))
+        vf = (f"setpts=PTS/{SPEED},"
+              f"minterpolate=fps={VIDEO_FPS}:mi_mode=mci:mc_mode=aobmc:me_mode=bidir:vsbmc=1,"
+              "format=yuv420p")
+        subprocess.run(
+            ["ffmpeg", "-v", "error", "-y", "-framerate", "24", "-i", os.path.join(seq, "o%04d.png"),
+             "-vf", vf, "-c:v", "libx264", "-preset", "slow", "-crf", "22", "-profile:v", "high",
+             "-level", "4.1", "-movflags", "+faststart", "-an", VIDEO_OUT],
+            check=True,
+        )
+        print(f"video: {os.path.getsize(VIDEO_OUT) / 1e6:.1f} MB")
 
         if os.path.isdir(OUT_DIR):
             shutil.rmtree(OUT_DIR)

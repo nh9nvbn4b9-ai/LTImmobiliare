@@ -64,6 +64,7 @@ em { font-style: normal; }
 address { font-style: normal; }
 ::selection { background: var(--red); color: #fff; }
 
+[hidden] { display: none !important; }
 .ico { width: 1.15em; height: 1.15em; flex: none; }
 .container { width: 100%; max-width: calc(var(--container) + var(--gutter) * 2); margin-inline: auto; padding-inline: var(--gutter); }
 
@@ -185,17 +186,18 @@ address { font-style: normal; }
 .mobile-menu__foot .btn { flex: 1; }
 
 /* =========================================================
-   HERO — animazione a scorrimento
+   HERO — animazione automatica a tutto schermo
    ========================================================= */
 .hero {
   position: relative;
-  height: 520vh;
+  height: 100vh; height: 100svh;
+  min-height: 520px;
   background: var(--navy-950);
   color: #fff;
 }
 .hero__sticky {
-  position: sticky; top: 0;
-  height: 100vh; height: 100dvh;
+  position: relative;
+  height: 100%;
   overflow: hidden;
   isolation: isolate;
 }
@@ -215,10 +217,12 @@ address { font-style: normal; }
 .hero__layout { position: absolute; inset: 0; }
 .hero__stage {
   position: absolute; inset: 0;
-  background: var(--navy-950) url("../assets/hero/frames/0000.webp") center / cover no-repeat;
+  background: var(--navy-950) url("../assets/hero/poster.webp") center / cover no-repeat;
   overflow: hidden;
 }
-.hero__canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+.hero__video, .hero__canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+.hero__video { object-fit: cover; object-position: 50% 50%; background: transparent; }
+.hero__video::-webkit-media-controls, .hero__video::-webkit-media-controls-start-playback-button { display: none !important; -webkit-appearance: none; }
 .hero__stage::after {
   content: ""; position: absolute; inset: 0; pointer-events: none;
   background:
@@ -288,22 +292,27 @@ address { font-style: normal; }
   border-radius: 2px; background: #fff; animation: wheel 1.8s var(--ease) infinite;
 }
 @keyframes wheel { 0% { transform: translateY(0); opacity: 0; } 25% { opacity: 1; } 80% { transform: translateY(10px); opacity: 0; } 100% { opacity: 0; } }
-.hero__skip {
+.hero__hint { opacity: 0; pointer-events: none; }
+.hero.is-ended .hero__hint { opacity: 1; }
+.hero__controls {
   position: absolute; z-index: 3; right: var(--gutter); top: calc(var(--header-h) + 14px);
-  display: inline-flex; align-items: center; gap: 6px;
-  padding: 8px 14px; border-radius: 999px;
-  font-size: .8rem; font-weight: 700; color: #fff; text-decoration: none;
-  background: rgba(7, 13, 36, .35); border: 1px solid rgba(255, 255, 255, .2);
-  backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
-  transition: opacity .4s, background-color .2s;
+  display: flex; gap: 8px;
 }
-.hero__skip:hover { background: rgba(7, 13, 36, .6); }
-.hero.is-past-start .hero__hint { opacity: 0; }
-.hero.is-at-end .hero__skip { opacity: 0; pointer-events: none; }
+.hero__ctl {
+  display: inline-flex; align-items: center; gap: 7px;
+  height: 36px; padding: 0 14px; border-radius: 999px; cursor: pointer;
+  font-size: .8rem; font-weight: 700; color: #fff;
+  background: rgba(7, 13, 36, .38); border: 1px solid rgba(255, 255, 255, .22);
+  backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+  transition: background-color .2s, border-color .2s, transform .2s var(--ease);
+}
+.hero__ctl .ico { width: 14px; height: 14px; }
+.hero__ctl:hover { background: rgba(7, 13, 36, .65); border-color: rgba(255, 255, 255, .45); }
+.hero__ctl:active { transform: scale(.96); }
+.hero.is-ended .hero__ctl[data-action="toggle"] { background: var(--red); border-color: var(--red); }
 
 /* Desktop / tablet orizzontale: pannello con luce ambientale */
 @media (min-width: 900px) and (min-aspect-ratio: 1/1) {
-  .hero { height: 560vh; }
   .hero__ambient, .hero__shade { display: block; }
   .hero__layout {
     display: grid;
@@ -330,7 +339,7 @@ address { font-style: normal; }
   .hero h1, .hero h2 { font-size: clamp(2.3rem, 3.7vw, 4.4rem); }
   .hero__lead { font-size: 1.1rem; }
   .hero__hint { left: clamp(32px, 5vw, 88px); transform: none; bottom: 40px; }
-  .hero__skip { top: auto; bottom: 40px; right: clamp(32px, 5vw, 88px); }
+  .hero__controls { top: auto; bottom: 40px; right: clamp(32px, 5vw, 88px); }
 }
 @media (min-width: 1280px) and (min-aspect-ratio: 1/1) {
   .hero__layout { grid-template-columns: minmax(0, 1.2fr) auto minmax(0, .8fr); }
@@ -365,10 +374,6 @@ address { font-style: normal; }
   .hero__ctas { margin-top: 14px; }
   .hero__ctas .btn { --h: 44px; }
 }
-
-/* Movimento ridotto: nessuno scorrimento lungo */
-.hero.is-static { height: 100vh; height: 100dvh; }
-.hero.is-static .hero__hint, .hero.is-static .hero__skip, .hero.is-static .hero__rail { display: none; }
 
 /* =========================================================
    Sezioni

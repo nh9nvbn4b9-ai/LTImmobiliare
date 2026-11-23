@@ -16,7 +16,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Manrope:wght@300;400;500;600;700;800&display=swap">
-  <link rel="preload" as="image" href="assets/hero/frames/0000.webp" fetchpriority="high">
+  <link rel="preload" as="image" href="assets/hero/poster.webp" fetchpriority="high">
   <link rel="stylesheet" href="css/style.css">
   <script type="application/ld+json">
   {
@@ -67,6 +67,10 @@
   <symbol id="i-check" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" d="M20 6 9 17l-5-5"/></symbol>
   <symbol id="i-route" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="19" r="3"/><path d="M9 19h8.5a3.5 3.5 0 0 0 0-7h-11a3.5 3.5 0 0 1 0-7H15"/><circle cx="18" cy="5" r="3"/></g></symbol>
   <symbol id="i-external" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M15 3h6v6M10 14 21 3M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/></symbol>
+  <symbol id="i-pause" viewBox="0 0 24 24"><g fill="currentColor"><rect x="6" y="5" width="4" height="14" rx="1"/><rect x="14" y="5" width="4" height="14" rx="1"/></g></symbol>
+  <symbol id="i-play" viewBox="0 0 24 24"><path fill="currentColor" d="M7 4.5v15a1 1 0 0 0 1.5.86l12.5-7.5a1 1 0 0 0 0-1.72L8.5 3.64A1 1 0 0 0 7 4.5Z"/></symbol>
+  <symbol id="i-replay" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/></g></symbol>
+  <symbol id="i-skip" viewBox="0 0 24 24"><g fill="currentColor"><path d="M5 5.5v13a1 1 0 0 0 1.55.83l9.5-6.5a1 1 0 0 0 0-1.66l-9.5-6.5A1 1 0 0 0 5 5.5Z"/><rect x="17" y="5" width="2.5" height="14" rx="1"/></g></symbol>
   <symbol id="lt-mark" viewBox="0 0 484 198"><path fill="var(--logo-l, #E1251B)" d="M0 5h65v148h419v45H0z"/><path fill="var(--logo-t, #fff)" d="M84 0h400v45H320v100h-71V45H84z"/></symbol>
 </svg>
 
@@ -123,32 +127,27 @@
 
       <div class="hero__layout">
         <div class="hero__copy">
-          <div class="hero__chapter" data-from="-999" data-to="44">
+          <div class="hero__chapter" data-from="-999" data-to="56">
             <p class="hero__kicker">Agenzia immobiliare · Tecchiena</p>
             <h1>La casa giusta <em>ti sta aspettando.</em></h1>
             <p class="hero__lead">Da 30 anni accompagniamo le famiglie della Ciociaria nella scelta più importante: quella di casa.</p>
           </div>
-          <div class="hero__chapter" data-from="54" data-to="82">
-            <p class="hero__kicker">Benvenuti</p>
-            <h2>Ogni porta che apriamo <em>è una promessa.</em></h2>
-            <p class="hero__lead">Trasparenza, ascolto e competenza: dalla prima visita fino alla consegna delle chiavi.</p>
-          </div>
-          <div class="hero__chapter" data-from="92" data-to="118">
+          <div class="hero__chapter" data-from="98" data-to="136">
             <p class="hero__kicker">Compravendite · Locazioni · Aste</p>
             <h2>Spazi che diventano <em>casa.</em></h2>
             <p class="hero__lead">Case, appartamenti, ville, rustici, locali commerciali e terreni: cerchiamo con te l'immobile su misura.</p>
           </div>
-          <div class="hero__chapter" data-from="128" data-to="166">
+          <div class="hero__chapter" data-from="146" data-to="184">
             <p class="hero__kicker">Consulenza a 360°</p>
             <h2>Al tuo fianco, <em>un passo alla volta.</em></h2>
             <p class="hero__lead">Mutui, finanziamenti, APE e pratiche catastali: ti seguiamo in ogni fase, fino al rogito.</p>
           </div>
-          <div class="hero__chapter" data-from="178" data-to="232">
+          <div class="hero__chapter" data-from="194" data-to="234">
             <p class="hero__kicker">Il nostro territorio</p>
             <h2>Guardiamo lontano, <em>insieme.</em></h2>
             <p class="hero__lead">Tecchiena, Alatri e i comuni vicini li conosciamo strada per strada. Perché qui è casa nostra.</p>
           </div>
-          <div class="hero__chapter hero__chapter--final" data-from="248" data-to="9999">
+          <div class="hero__chapter hero__chapter--final" data-from="250" data-to="9999">
             <p class="hero__kicker">LT Immobiliare · di Luca Tagliaferri</p>
             <h2>Benvenuti <em>a casa.</em></h2>
             <p class="hero__lead">Scopri gli immobili disponibili o raccontaci cosa stai cercando: ti richiamiamo noi.</p>
@@ -159,8 +158,9 @@
           </div>
         </div>
 
-        <div class="hero__stage">
-          <canvas class="hero__canvas" role="img" aria-label="Animazione: l'arrivo a una villa moderna, l'ingresso in casa, la salita al piano superiore e la vista sul tramonto, fino al logo LT Immobiliare"></canvas>
+        <div class="hero__stage" role="img" aria-label="Animazione: l'arrivo a una villa moderna, l'ingresso in casa, la salita al piano superiore e la vista sul tramonto, fino al logo LT Immobiliare">
+          <video class="hero__video" data-src="assets/hero/hero.mp4" poster="assets/hero/poster.webp" muted playsinline webkit-playsinline preload="auto" disablepictureinpicture disableremoteplayback aria-hidden="true"></video>
+          <canvas class="hero__canvas" aria-hidden="true" hidden></canvas>
           <div class="hero__bar" aria-hidden="true"><span></span></div>
         </div>
 
@@ -174,8 +174,15 @@
         </ol>
       </div>
 
-      <div class="hero__hint" aria-hidden="true"><span class="hero__mouse"></span>Scorri per entrare</div>
-      <a class="hero__skip" href="#ricerca">Salta l'intro<svg class="ico" aria-hidden="true"><use href="#i-arrow"/></svg></a>
+      <div class="hero__hint" aria-hidden="true"><span class="hero__mouse"></span>Scorri per scoprire</div>
+      <div class="hero__controls">
+        <button type="button" class="hero__ctl" data-action="toggle" aria-label="Metti in pausa l'animazione">
+          <svg class="ico" aria-hidden="true"><use href="#i-pause"/></svg><span>Pausa</span>
+        </button>
+        <button type="button" class="hero__ctl" data-action="skip" aria-label="Salta alla fine dell'animazione">
+          <span>Salta</span><svg class="ico" aria-hidden="true"><use href="#i-skip"/></svg>
+        </button>
+      </div>
     </div>
   </section>
 
