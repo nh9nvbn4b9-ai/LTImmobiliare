@@ -203,8 +203,7 @@ address { font-style: normal; }
 }
 .hero__ambient {
   position: absolute; inset: -12%; width: 124%; height: 124%;
-  filter: blur(56px) saturate(1.35);
-  opacity: .7;
+  opacity: .62;
   z-index: -2;
   display: none;
 }

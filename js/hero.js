@@ -29,6 +29,10 @@
   var ctx = canvas.getContext('2d', { alpha: false });
   var amb = hero.querySelector('.hero__ambient');
   var actx = amb.getContext('2d', { alpha: false });
+  // luce ambientale: l'immagine viene ridotta a pochi pixel e poi ingrandita (sfocatura "gratuita",
+  // senza filtri CSS che rallenterebbero ogni fotogramma)
+  var tiny = document.createElement('canvas');
+  var tctx = tiny.getContext('2d', { alpha: false });
   var bar = hero.querySelector('.hero__bar span');
   var btnToggle = hero.querySelector('[data-action="toggle"]');
   var btnSkip = hero.querySelector('[data-action="skip"]');
@@ -162,7 +166,11 @@
     var ambSrc = null;
     if (mode === 'video') { placeVideo(f); ambSrc = video.readyState >= 2 ? video : null; }
     else ambSrc = drawFrames(f);
-    if (ambOn && ambSrc && (ambTick++ % 2 === 0 || !playing)) cover(actx, ambSrc, amb.width, amb.height, .5);
+    // la luce ambientale cambia lentamente: aggiornarla ~8 volte al secondo basta e alleggerisce molto
+    if (ambOn && ambSrc && (ambTick++ % 4 === 0 || !playing)) {
+      cover(tctx, ambSrc, tiny.width, tiny.height, .5);
+      actx.drawImage(tiny, 0, 0, amb.width, amb.height);
+    }
     overlay(f);
   }
 
@@ -305,8 +313,12 @@
     }
     ambOn = window.getComputedStyle(amb).display !== 'none';
     if (ambOn) {
-      var aw = 72, ah = Math.max(1, Math.round(aw * window.innerHeight / Math.max(1, window.innerWidth)));
+      var ratio = window.innerHeight / Math.max(1, window.innerWidth);
+      var aw = 64, ah = Math.max(1, Math.round(aw * ratio));
       if (amb.width !== aw || amb.height !== ah) { amb.width = aw; amb.height = ah; }
+      tiny.width = 10; tiny.height = Math.max(1, Math.round(10 * ratio));
+      actx.imageSmoothingEnabled = tctx.imageSmoothingEnabled = true;
+      actx.imageSmoothingQuality = tctx.imageSmoothingQuality = 'high';
     }
     lastPos = '';
     render();
