@@ -7,9 +7,7 @@
    - Riserva: se il browser blocca la riproduzione automatica dei video
      (es. iPhone in "Risparmio energetico"), la stessa animazione viene
      disegnata su <canvas> dai fotogrammi WebP, sempre in automatico.
-   - "Riduci movimento" attivo: si vede il logo finale e un pulsante
-     per guardare l'animazione.
-   I testi, la barra di avanzamento e i capitoli seguono il tempo.
+   I testi e i capitoli seguono il tempo.
    ========================================================= */
 (function () {
   'use strict';
@@ -33,16 +31,13 @@
   // senza filtri CSS che rallenterebbero ogni fotogramma)
   var tiny = document.createElement('canvas');
   var tctx = tiny.getContext('2d', { alpha: false });
-  var bar = hero.querySelector('.hero__bar span');
-  var btnToggle = hero.querySelector('[data-action="toggle"]');
   var btnSkip = hero.querySelector('[data-action="skip"]');
   var railBtns = Array.prototype.slice.call(hero.querySelectorAll('[data-goto]'));
   var chapters = Array.prototype.map.call(hero.querySelectorAll('.hero__chapter'), function (el) {
     return { el: el, from: +el.dataset.from, to: +el.dataset.to, o: -1 };
   });
-  var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  var mode = reduced ? 'static' : 'video';  // 'video' | 'frames' | 'static'
+  var mode = 'video';                       // 'video' | 'frames' (l'animazione parte sempre da sola)
   var D = N / FRAME_RATE;                    // durata in secondi (aggiornata dal video)
   var t = 0;                                 // tempo corrente
   var playing = false, ended = false, userPaused = false, autoPaused = false, inView = true;
@@ -57,7 +52,7 @@
 
   /* ---------- fotogrammi (solo per la riserva) ---------- */
   var imgs = new Array(N), ready = new Uint8Array(N), contig = -1;
-  var qi = 0, inflight = 0, framesStarted = false, finalImg = null;
+  var qi = 0, inflight = 0, framesStarted = false;
   function loadFrames() {
     if (framesStarted) return;
     framesStarted = true;
@@ -112,7 +107,7 @@
   }
   function drawFrames(f) {
     var i0 = Math.floor(f), k = f - i0;
-    var a = mode === 'static' && finalImg ? finalImg : nearest(i0);
+    var a = nearest(i0);
     if (!a) return null;
     var b = mode === 'frames' && k > 0.02 ? nearest(Math.min(i0 + 1, N - 1)) : null;
     var fy = focusAt(f);
@@ -158,7 +153,6 @@
         if (n === act) btn.setAttribute('aria-current', 'step'); else btn.removeAttribute('aria-current');
       });
     }
-    if (bar) bar.style.transform = 'scaleX(' + clamp(f / (N - 1), 0, 1).toFixed(4) + ')';
   }
 
   function render() {
@@ -179,7 +173,8 @@
   function loop(now) {
     raf = 0;
     if (mode === 'video') {
-      t = video.currentTime || 0;
+      syncDuration();
+      t = ended ? D : (video.currentTime || 0);
     } else if (mode === 'frames' && playing) {
       var dt = lastNow ? Math.min((now - lastNow) / 1000, 0.1) : 0;
       var next = Math.min(D, t + dt);
@@ -195,15 +190,7 @@
 
   /* ---------- stato e comandi ---------- */
   function setControls() {
-    var icon, label, aria;
-    if (mode === 'static') { icon = 'i-play'; label = 'Guarda l\'animazione'; aria = 'Guarda l\'animazione'; }
-    else if (ended) { icon = 'i-replay'; label = 'Rivedi'; aria = 'Riguarda l\'animazione dall\'inizio'; }
-    else if (playing) { icon = 'i-pause'; label = 'Pausa'; aria = 'Metti in pausa l\'animazione'; }
-    else { icon = 'i-play'; label = 'Riproduci'; aria = 'Riprendi l\'animazione'; }
-    btnToggle.querySelector('use').setAttribute('href', '#' + icon);
-    btnToggle.querySelector('span').textContent = label;
-    btnToggle.setAttribute('aria-label', aria);
-    btnSkip.hidden = ended;
+    if (btnSkip) btnSkip.hidden = ended;
     hero.classList.toggle('is-ended', ended);
     hero.classList.toggle('is-playing', playing);
   }
@@ -227,6 +214,7 @@
     setControls();
   }
   function finish() {
+    syncDuration();
     t = D; playing = false; ended = true;
     if (mode === 'video' && !video.paused) video.pause();
     setControls();
@@ -253,10 +241,15 @@
     video.playsInline = true;
     if (!video.getAttribute('src')) video.src = video.dataset.src;
     play();
+    // con l'attributo autoplay il video può essere già partito prima di questo script
+    if (!video.paused && inView) { playing = true; ended = false; setControls(); kick(); }
   }
-  video.addEventListener('loadedmetadata', function () {
-    if (isFinite(video.duration) && video.duration > 0) D = video.duration;
-  });
+  // durata reale del video (i metadati possono arrivare prima di questo script)
+  function syncDuration() {
+    if (mode === 'video' && isFinite(video.duration) && video.duration > 0) D = video.duration;
+  }
+  video.addEventListener('loadedmetadata', syncDuration);
+  video.addEventListener('durationchange', syncDuration);
   video.addEventListener('play', function () {
     if (mode !== 'video') return;
     if (!inView || document.hidden) { autoPaused = true; video.pause(); return; }  // pagina aperta più in basso
@@ -286,18 +279,9 @@
   }
 
   /* ---------- pulsanti ---------- */
-  btnToggle.addEventListener('click', function () {
-    if (mode === 'static') { userPaused = false; t = 0; startVideo(); return; }
-    if (ended) { t = 0; if (mode === 'video') { try { video.currentTime = 0; } catch (e) {} } userPaused = false; play(); return; }
-    if (playing) { userPaused = true; pause(); }
-    else { userPaused = false; play(); }
-  });
-  btnSkip.addEventListener('click', function () { seek(N - 1); });
+  if (btnSkip) btnSkip.addEventListener('click', function () { seek(N - 1); });
   railBtns.forEach(function (btn) {
-    btn.addEventListener('click', function () {
-      if (mode === 'static') { startVideo(); }
-      seek(+btn.dataset.goto);
-    });
+    btn.addEventListener('click', function () { seek(+btn.dataset.goto); });
   });
 
   /* ---------- dimensioni ---------- */
@@ -342,19 +326,7 @@
   });
 
   /* ---------- avvio ---------- */
-  if (mode === 'static') {
-    // movimento ridotto: logo finale fermo, l'animazione parte solo su richiesta
-    video.hidden = true;
-    canvas.hidden = false;
-    t = D; ended = true;
-    finalImg = new Image();
-    finalImg.onload = function () { resize(); };
-    finalImg.src = 'assets/hero/final.webp';
-    resize();
-    setControls();
-  } else {
-    resize();
-    overlay(0);
-    startVideo();
-  }
+  resize();
+  overlay(0);
+  startVideo();
 })();

@@ -159,9 +159,8 @@
         </div>
 
         <div class="hero__stage" role="img" aria-label="Animazione: l'arrivo a una villa moderna, l'ingresso in casa, la salita al piano superiore e la vista sul tramonto, fino al logo LT Immobiliare">
-          <video class="hero__video" data-src="assets/hero/hero.mp4" poster="assets/hero/poster.webp" muted playsinline webkit-playsinline preload="auto" disablepictureinpicture disableremoteplayback aria-hidden="true"></video>
+          <video class="hero__video" src="assets/hero/hero.mp4" data-src="assets/hero/hero.mp4" poster="assets/hero/poster.webp" autoplay muted playsinline webkit-playsinline preload="auto" disablepictureinpicture disableremoteplayback aria-hidden="true"></video>
           <canvas class="hero__canvas" aria-hidden="true" hidden></canvas>
-          <div class="hero__bar" aria-hidden="true"><span></span></div>
         </div>
 
         <ol class="hero__rail" aria-label="Capitoli dell'animazione">
@@ -176,9 +175,6 @@
 
       <div class="hero__hint" aria-hidden="true"><span class="hero__mouse"></span>Scorri per scoprire</div>
       <div class="hero__controls">
-        <button type="button" class="hero__ctl" data-action="toggle" aria-label="Metti in pausa l'animazione">
-          <svg class="ico" aria-hidden="true"><use href="#i-pause"/></svg><span>Pausa</span>
-        </button>
         <button type="button" class="hero__ctl" data-action="skip" aria-label="Salta alla fine dell'animazione">
           <span>Salta</span><svg class="ico" aria-hidden="true"><use href="#i-skip"/></svg>
         </button>
@@ -286,6 +282,15 @@
 
       <div class="listings" id="listings"></div>
 
+      <div class="empty empty--catalog" id="catalog-empty" hidden>
+        <h3>Il catalogo online è in aggiornamento</h3>
+        <p>Abbiamo sempre nuovi immobili in vendita e in affitto, molti ancora prima che vengano pubblicati. Chiamaci o scrivici su WhatsApp: ti mostriamo subito le disponibilità più adatte a te.</p>
+        <div class="empty__ctas">
+          <a class="btn btn--wa" href="https://wa.me/393393465927?text=Buongiorno%2C%20vorrei%20conoscere%20gli%20immobili%20disponibili." target="_blank" rel="noopener"><svg class="ico" aria-hidden="true"><use href="#i-whatsapp"/></svg>Scrivici su WhatsApp</a>
+          <a class="btn btn--outline" href="tel:+393393465927"><svg class="ico" aria-hidden="true"><use href="#i-phone"/></svg>339 346 5927</a>
+        </div>
+      </div>
+
       <div class="empty" id="empty" hidden>
         <h3>Nessun immobile corrisponde alla ricerca</h3>
         <p>Prova ad allargare i filtri, oppure raccontaci cosa cerchi: ti avvisiamo noi appena arriva l'immobile giusto.</p>
@@ -371,12 +376,14 @@
       <div class="about__media reveal">
         <figure class="portrait">
           <img src="assets/img/luca-tagliaferri.webp" alt="Luca Tagliaferri, titolare di LT Immobiliare" loading="lazy" decoding="async" width="1179" height="1305">
-          <figcaption><strong>Luca Tagliaferri</strong><span>Titolare</span></figcaption>
+          <figcaption>
+            <span class="portrait__name"><strong>Luca Tagliaferri</strong><span>Titolare</span></span>
+            <span class="about__badge" aria-label="30 anni di esperienza">
+              <span class="about__num" data-count="30">30</span>
+              <span class="about__badge-text">anni di<br>esperienza</span>
+            </span>
+          </figcaption>
         </figure>
-        <div class="about__badge" aria-label="30 anni di esperienza">
-          <span class="about__num" data-count="30">30</span>
-          <span class="about__badge-text">anni di<br>esperienza</span>
-        </div>
       </div>
 
       <div class="about__text">

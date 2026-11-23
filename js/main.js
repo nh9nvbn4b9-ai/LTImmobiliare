@@ -199,6 +199,10 @@
 
   if (form && listEl) {
     if (catalogo.demo) $('#demo-note').hidden = false;
+    // catalogo vuoto: messaggio dedicato al posto dei risultati
+    var noCatalog = !immobili.length;
+    $('#catalog-empty').hidden = !noCatalog;
+    $('.results-bar').hidden = noCatalog;
 
     // comuni presenti nel catalogo
     var comuneSel = form.elements.comune;
@@ -268,7 +272,7 @@
       });
       listEl.innerHTML = res.map(cardHTML).join('');
       listEl.hidden = !res.length;
-      emptyEl.hidden = !!res.length;
+      emptyEl.hidden = !!res.length || noCatalog;
       countEl.innerHTML = res.length
         ? '<strong>' + res.length + '</strong> ' + (res.length === 1 ? 'immobile trovato' : 'immobili trovati')
         : 'Nessun immobile trovato';
